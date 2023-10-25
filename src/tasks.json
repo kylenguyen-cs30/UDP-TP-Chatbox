@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "-o",
+                "myapp",
+                "main.cpp",
+                "-I/opt/homebrew/include",
+                "-L/opt/homebrew/lib",
+                "-lQt6Widgets"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
