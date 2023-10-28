@@ -9,13 +9,20 @@ CXXFLAGS = -I../include $(shell $(WX_CONFIG) --cxxflags)
 LDFLAGS = $(shell $(WX_CONFIG) --libs)
 
 # Source and target
-SRC = src/gui.cpp
+SRCS = src/gui.cpp src/main.cpp
 TARGET = chat_app
 
 all: $(TARGET)
 
+# $(TARGET): $(SRC)
+# 	$(CXX) $(SRC) $(CXXFLAGS) $(LDFLAGS) -o $(TARGET)
+
+# clean:
+# 	rm -f $(TARGET)
+
+
 $(TARGET): $(SRC)
-	$(CXX) $(SRC) $(CXXFLAGS) $(LDFLAGS) -o $(TARGET)
+	$(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
 
 clean:
 	rm -f $(TARGET)
