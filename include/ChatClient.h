@@ -15,12 +15,12 @@ class ChatClient
 private:
     int sockfd;
     char buffer[1024];
-    struct sockaddr_in servadd, cliaddr;
+    struct sockaddr_in serverAddr;
 public:
     ChatClient(/* args */);
     ~ChatClient();
 
-    void initialize(int port);
+    void initialize(const char* serverIP,int port, int listenPort);
     void listenForMessages();
     void sendMessage(const char* message);
     void shutdown();

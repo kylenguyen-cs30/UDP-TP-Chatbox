@@ -122,7 +122,6 @@ int main(){
 
     while(keepRunning){
         server.listenForMessages();
-
     }
 
     server.shutdown();
