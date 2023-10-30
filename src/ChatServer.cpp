@@ -4,6 +4,7 @@
 volatile bool keepRunning = true;
 
 void handleSignal(int signal){
+    std::cout << "Handle signal is called" << std::endl;
     keepRunning = false;
 }
 
@@ -38,6 +39,20 @@ void ChatServer::initialize(int recvPort){
     exit(EXIT_FAILURE);
    }
 
+
+   // set a timeout for recvfrom
+   struct timeval timeout;
+   timeout.tv_sec = 1; // 1 sec timeout
+   timeout.tv_usec = 0;
+
+   if(setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0){
+    perror("Failed to set socket timeout");
+    close(sockfd);
+    exit(EXIT_FAILURE);
+   }
+
+
+
    std::cout << "Server initialized and bound to port " << recvPort << std::endl;
    
 }
@@ -50,8 +65,12 @@ void ChatServer::listenForMessages(){
     int n = recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)&cliaddr, &len);
     if (n < 0)
     {
-        perror("Error receiving data");
-        return;
+        if (errno != EAGAIN && errno != EWOULDBLOCK)
+        {
+            perror("Error receiving data");
+            return;
+        }
+        
     }
 
     buffer[n] = '\0'; // Null terminate the recevied data
