@@ -38,7 +38,7 @@ void ChatServer::initialize(int recvPort){
     exit(EXIT_FAILURE);
    }
 
-   std::cout << "Server initialized and bound to port" << recvPort << std::endl;
+   std::cout << "Server initialized and bound to port " << recvPort << std::endl;
    
 }
 
@@ -55,11 +55,11 @@ void ChatServer::listenForMessages(){
     }
 
     buffer[n] = '\0'; // Null terminate the recevied data
-    std::cout << "Received message: " << buffer << " from client. " << std::end;
+    std::cout << "Received message: " << buffer << " from client. " << std::endl;
 
     // address to send a response back the client
     struct sockaddr_in sendAddr;
-    sendAddr.sin_addr = AF_INET;
+    sendAddr.sin_family = AF_INET;
     sendAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
     sendAddr.sin_port = htons(3514);
 
@@ -68,10 +68,7 @@ void ChatServer::listenForMessages(){
     
 }
 
-void ChatServer::sendMessage(){
-    
-
-}
+void ChatServer::sendMessage(const char* message){}
 
 void ChatServer::shutdown(){
     // close the server 
@@ -82,10 +79,11 @@ void ChatServer::shutdown(){
 int main(){
     //Register the signal handler
     signal(SIGINT, handleSignal);
+    
     ChatServer server;
     server.initialize(3515);
 
-    while(true){
+    while(keepRunning){
         server.listenForMessages();
 
     }
