@@ -8,5 +8,23 @@
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
 #include <netinet/in.h> 
+#include <iostream>
+
+class ChatClient
+{
+private:
+    int sockfd;
+    char buffer[1024];
+    struct sockaddr_in servadd, cliaddr;
+public:
+    ChatClient(/* args */);
+    ~ChatClient();
+
+    void initialize(int port);
+    void listenForMessages();
+    void sendMessage(const char* message);
+    void shutdown;
+};
+
 
 #endif // !CHATCLIENT_H
