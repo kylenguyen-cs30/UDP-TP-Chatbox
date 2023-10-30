@@ -23,7 +23,7 @@ public:
     void initialize(int port);
     void listenForMessages();
     void sendMessage(const char* message);
-    void shutdown;
+    void shutdown();
 };
 
 

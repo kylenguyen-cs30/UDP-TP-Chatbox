@@ -87,7 +87,25 @@ void ChatServer::listenForMessages(){
     
 }
 
-void ChatServer::sendMessage(const char* message){}
+void ChatServer::sendMessage(const char* message){
+    //destination address structure
+    struct sockaddr_in destAddr;
+
+    memset(&destAddr, 0,sizeof(destAddr));
+    destAddr.sin_family = AF_INET;
+    destAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    destAddr.sin_port = htons(3514);
+
+    // send the message
+    int bytesSent = sendto(sockfd, message, strlen(message), 0,(struct sockaddr*)&destAddr,sizeof(destAddr));
+    if (bytesSent < 0)
+    {
+        perror("Error sending message");
+    }else{
+        std::cout << "Sent message: " << message << std::endl;
+    }
+    
+}
 
 void ChatServer::shutdown(){
     // close the server 
