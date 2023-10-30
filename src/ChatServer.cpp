@@ -121,6 +121,7 @@ int main(){
     server.initialize(3515);
 
     while(keepRunning){
+        server.sendMessage("Hello Client from Server!");
         server.listenForMessages();
     }
 
