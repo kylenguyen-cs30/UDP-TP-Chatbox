@@ -51,7 +51,7 @@ ChatFrame::ChatFrame(const wxString &title, Mode m) : wxFrame(NULL, wxID_ANY, ti
     // initialize the timer to check for the messages
     checkMessagesTimer = new wxTimer(this, wxID_ANY);
     Bind(wxEVT_TIMER, &ChatFrame::OnCheckMessages, this, checkMessagesTimer->GetId());
-    checkMessagesTimer->Start(10000); // check every second
+    checkMessagesTimer->Start(6000); // check every second
 }
 
 void ChatFrame::OnCheckMessages(wxTimerEvent &event)

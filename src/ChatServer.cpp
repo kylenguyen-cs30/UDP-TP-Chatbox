@@ -74,16 +74,16 @@ std::string ChatServer::listenForMessages(){
     }
 
     buffer[n] = '\0'; // Null terminate the recevied data
-    std::cout << "Received message: " << buffer << " from client. " << std::endl;
+    //std::cout << "Received message: " << buffer << " from client. " << std::endl;
 
     // address to send a response back the client
-    struct sockaddr_in sendAddr;
-    sendAddr.sin_family = AF_INET;
-    sendAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    sendAddr.sin_port = htons(3514);
+    // struct sockaddr_in sendAddr;
+    // sendAddr.sin_family = AF_INET;
+    // sendAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    // sendAddr.sin_port = htons(3514);
 
-    const char * response = "Message recevied by server";
-    sendto(sockfd,response, strlen(response), 0, (struct sockaddr*)&sendAddr,sizeof(sendAddr));
+    // const char * response = "Message recevied by server";
+    // sendto(sockfd,response, strlen(response), 0, (struct sockaddr*)&sendAddr,sizeof(sendAddr));
 
     return std::string(buffer);
     
