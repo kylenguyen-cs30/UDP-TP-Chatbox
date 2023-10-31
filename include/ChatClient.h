@@ -21,7 +21,7 @@ public:
     ~ChatClient();
 
     void initialize(const char* serverIP,int port, int listenPort);
-    void listenForMessages();
+    std::string listenForMessages();
     void sendMessage(const char* message);
     void shutdown();
 };

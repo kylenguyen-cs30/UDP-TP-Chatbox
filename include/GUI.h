@@ -6,16 +6,26 @@
 #include "../include/ChatServer.h"
 
 
+enum class Mode {
+    SERVER,
+    CLIENT
+};
+
+
 class ChatApp : public wxApp{
     public:
         virtual bool OnInit();
 };
 
+
+
 class ChatFrame : public wxFrame{
     public:
-        ChatFrame(const wxString& titile);
+        ChatFrame(const wxString& titile, Mode m);
 
     private:
+        Mode mode; // to store whether the gui is acting as SERVER or CLIENT
+
         wxTextCtrl* conversationCtrl;
         wxTextCtrl* inputCtrl;
         wxButton* sendButton;
