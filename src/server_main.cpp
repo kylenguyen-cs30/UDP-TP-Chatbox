@@ -3,7 +3,8 @@
 IMPLEMENT_APP(ChatApp)
 
 bool ChatApp::OnInit(){
-    ChatFrame* frame = new ChatFrame("Chat App");
+    Mode selectedMode = Mode::SERVER;
+    ChatFrame* frame = new ChatFrame("Chat App" , selectedMode);
     frame->Show(true);
     return true;
 }

@@ -1,9 +1,9 @@
 #include "../include/ChatServer.h"
 #include <signal.h>
 
-volatile bool keepRunning = true;
+static volatile bool keepRunning = true;
 
-void handleSignal(int signal){
+static void handleSignal(int signal){
     std::cout << "Handle signal is called" << std::endl;
     keepRunning = false;
 }
@@ -57,7 +57,7 @@ void ChatServer::initialize(int recvPort){
    
 }
 
-void ChatServer::listenForMessages(){
+std::string ChatServer::listenForMessages(){
     char buffer[1024] = {0};
     struct sockaddr_in cliaddr;
     socklen_t  len = sizeof(cliaddr);
@@ -68,7 +68,7 @@ void ChatServer::listenForMessages(){
         if (errno != EAGAIN && errno != EWOULDBLOCK)
         {
             perror("Error receiving data");
-            return;
+            return"";
         }
         
     }
@@ -84,6 +84,8 @@ void ChatServer::listenForMessages(){
 
     const char * response = "Message recevied by server";
     sendto(sockfd,response, strlen(response), 0, (struct sockaddr*)&sendAddr,sizeof(sendAddr));
+
+    return std::string(buffer);
     
 }
 
@@ -112,21 +114,4 @@ void ChatServer::shutdown(){
     close(sockfd);
     std::cout << "Server shut down. "<< std::endl;
 }
-
-int main(){
-    //Register the signal handler
-    signal(SIGINT, handleSignal);
-    
-    ChatServer server;
-    server.initialize(3515);
-
-    while(keepRunning){
-        server.sendMessage("Hello Client from Server!");
-        server.listenForMessages();
-    }
-
-    server.shutdown();
-    return 0;
-}
-
 

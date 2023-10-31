@@ -1,10 +1,10 @@
 #include "../include/ChatClient.h"
 #include <signal.h>
 
-volatile bool keepRunning = true;
+static volatile bool keepRunning = true;
 
 // handle incoming signal
-void handleSignal(int signal){
+static void handleSignal(int signal){
     keepRunning = false;
 }
 
@@ -48,7 +48,7 @@ void ChatClient::initialize(const char* serverIP, int serverPort, int listenPort
 } 
 
 
-void ChatClient::listenForMessages(){
+std::string ChatClient::listenForMessages(){
     char buffer[1024] = {0};
     struct sockaddr_in fromAddr;
     socklen_t len = sizeof(fromAddr);
@@ -59,12 +59,13 @@ void ChatClient::listenForMessages(){
         {
             perror("Error receiving data");
         }
-        return;
+        return"";
     }
 
     buffer[n] = '\0';
-    std::cout << "Received reponse: " << buffer << " from server." << std::endl;
-    
+    std::string recvMessage(buffer);
+    std::cout << "Received reponse: " << recvMessage << " from server." << std::endl;
+    return recvMessage;
     
 }
 
@@ -79,15 +80,3 @@ void ChatClient::shutdown(){
 }
 
 
-int main(int argc, char const *argv[])
-{
-    //register the signal handler
-    signal(SIGINT, handleSignal);
-    ChatClient client;
-    client.initialize("127.0.0.1", 3515, 3514);
-    while (keepRunning){
-        client.listenForMessages();
-    }
-    client.shutdown();
-    return 0;
-}
