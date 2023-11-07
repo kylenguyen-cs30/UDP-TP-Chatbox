@@ -31,13 +31,6 @@ ChatFrame::ChatFrame(const wxString &title, Mode m) : wxFrame(NULL, wxID_ANY, ti
     }
     
 
-
-
-    // initialize chatserver
-    // server.initialize(3515);
-    // initialize chatclient
-    // client.initialize("127.0.0.1", 3515, 3514);
-
     // initalize server and client via conditional logic
     if (mode == Mode::SERVER)
     {
@@ -83,6 +76,8 @@ void ChatFrame::OnSend(wxCommandEvent &e)
 {
     // handle send logic
     wxString message = inputCtrl->GetValue();
+    conversationCtrl->AppendText(message + "\n");
+
     if (mode == Mode::SERVER)
     {
         server.sendMessage(message.c_str());
@@ -108,3 +103,10 @@ void ChatFrame::OnClose(wxCommandEvent &e)
 
     Close(true);
 }
+
+
+/*
+ISSUE :
+- the application is still very slow 
+
+*/
