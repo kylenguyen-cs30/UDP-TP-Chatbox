@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#remove file
+rm test_chatapp_client test_chatapp_server
+
 # Compilation flags for wxWidgets
 WX_CFLAGS=$(wx-config --cxxflags)
 WX_LIBS=$(wx-config --libs)
