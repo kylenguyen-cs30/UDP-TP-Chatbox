@@ -5,7 +5,7 @@
 #include "../include/ChatClient.h"
 #include "../include/ChatServer.h"
 
-
+//Enum for conditional logic
 enum class Mode {
     SERVER,
     CLIENT
@@ -34,6 +34,7 @@ class ChatFrame : public wxFrame{
         void OnSend(wxCommandEvent& e);
         void OnClose(wxCommandEvent& e);
         void OnCheckMessages(wxTimerEvent& e);
+        void PostMessageToConversation(const std::string& msg);
 
         //instance from ChatServer and ChatClient
         ChatServer server;

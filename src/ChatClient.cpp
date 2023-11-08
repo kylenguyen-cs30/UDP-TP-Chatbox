@@ -1,24 +1,24 @@
 #include "../include/ChatClient.h"
-#include <signal.h>
 
-static volatile bool keepRunning = true;
 
-// handle incoming signal
-static void handleSignal(int signal){
-    keepRunning = false;
-}
 
-ChatClient::ChatClient(){}
+ChatClient::ChatClient() : keepRunning(false){}
 
 ChatClient::~ChatClient(){}
 
 void ChatClient::initialize(const char* serverIP, int serverPort, int listenPort){
+    
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockfd == -1) 
     {
         perror("Failed to create socket");
         exit(EXIT_FAILURE);
     }
+
+    //create thread
+    recvThread = std::thread(&ChatClient::listenForMessagesThread,this);
+    keepRunning = true;
+    
 
     // Bind the client's socket to a specific port to listen for messages
     struct sockaddr_in listenAddr;
@@ -73,10 +73,66 @@ void ChatClient::sendMessage(const char* message){
     sendto(sockfd, message, strlen(message), 0, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
 }
 
+
 void ChatClient::shutdown(){
     // close the server
-    close(sockfd);
-    std::cout << "server shut down." << std::endl;
+    // close(sockfd);
+    // std::cout << "server shut down." << std::endl;
+
+    keepRunning.store(false);
+    if (recvThread.joinable())
+    {
+        recvThread.join();
+    }
+    if (sockfd != -1)
+    {
+        close(sockfd);
+        sockfd = -1;
+    }
+    
+    
 }
 
 
+std::string ChatClient::popMessage(){
+    std::lock_guard<std::mutex> guard(msgMutex);
+    if (messageQueue.empty())
+    {
+        return "";
+    }
+    std::string msg = messageQueue.front();
+    messageQueue.pop();
+    return msg;
+    
+}
+
+void ChatClient::listenForMessagesThread(){
+    while(keepRunning){
+        std::string msg = listenForMessages();
+        if (!msg.empty())
+        {
+            std::lock_guard<std::mutex> guard(msgMutex);
+            messageQueue.push(msg);
+            newMessageFlag = true;
+            cv.notify_one();
+        }
+        
+    }
+}
+
+void ChatClient::waitForNewMessage(){
+    std::unique_lock<std::mutex> lock(msgMutex);
+    cv.wait(lock, [this]{ return newMessageFlag; });
+    newMessageFlag = false;
+    
+}
+
+void ChatClient::resetNewMessageFlag(){
+    std::lock_guard<std::mutex> guard(msgMutex);
+    newMessageFlag = false;
+}
+
+bool ChatClient::hasMessages(){
+    std::lock_guard<std::mutex> guard(msgMutex);
+    return !messageQueue.empty();
+}
