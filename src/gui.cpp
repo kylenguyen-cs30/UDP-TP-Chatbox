@@ -47,28 +47,45 @@ ChatFrame::ChatFrame(const wxString &title, Mode m) : wxFrame(NULL, wxID_ANY, ti
     checkMessagesTimer->Start(6000); // check every second
 }
 
+
+
+
 void ChatFrame::OnCheckMessages(wxTimerEvent &event)
 {
-    std::string receivedMessage;
-    if (mode == Mode::SERVER)
+    //std::string receivedMessage;
+    if (mode == Mode::SERVER && server.hasMessages() )
     {
-        receivedMessage = server.listenForMessages();
-    }
-    else
+        // std::unique_lock<std::mutex> lock(server.msgMutex); // ??
+        // server.cv.wait(lock, [this]{return server.newMessageFlag; }); // explain ??
+        server.waitForNewMessage();
+        std::string receivedMessage = "Client: "+ server.popMessage();
+        if (!receivedMessage.empty())
+        {
+            conversationCtrl->AppendText(receivedMessage+ "\n");
+        }
+        // server.newMessageFlag = false;
+        
+    }else if (mode == Mode::CLIENT && client.hasMessages())
     {
-        receivedMessage = client.listenForMessages();
-    }
+        // std::unique_lock<std::mutex> lock(client.msgMutex);
+        // client.cv.wait(lock, [this]{return client.newMessageFlag; });
+        client.waitForNewMessage();
+        std::string receivedMessage ="Server: " + client.popMessage();
 
-    if (!receivedMessage.empty())
-    {
-        conversationCtrl->AppendText(receivedMessage + "\n");
+        if (!receivedMessage.empty())
+        {
+            conversationCtrl->AppendText(receivedMessage + "\n");
+        }
+        // client.newMessageFlag = false;
+        
     }
+    
 }
 
 void ChatFrame::OnSend(wxCommandEvent &e)
 {
     // handle send logic
-    wxString message = inputCtrl->GetValue();
+    wxString message = "Me: " + inputCtrl->GetValue();
     conversationCtrl->AppendText(message + "\n");
 
     if (mode == Mode::SERVER)
@@ -96,6 +113,12 @@ void ChatFrame::OnClose(wxCommandEvent &e)
 
     Close(true);
 }
+
+
+// void ChatFrame::PostMessageToConversation(const std::string& message){
+
+// }
+
 
 
 /*

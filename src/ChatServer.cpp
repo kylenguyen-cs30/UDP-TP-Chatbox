@@ -1,15 +1,16 @@
 #include "../include/ChatServer.h"
 #include <signal.h>
 
-static volatile bool keepRunning = true;
 
-static void handleSignal(int signal){
-    std::cout << "Handle signal is called" << std::endl;
-    keepRunning = false;
-}
+// static volatile bool keepRunning = true;
+
+// static void handleSignal(int signal){
+//     std::cout << "Handle signal is called" << std::endl;
+//     keepRunning = false;
+// }
 
 
-ChatServer::ChatServer(){
+ChatServer::ChatServer() : keepRunning(false){
     //Constructor
 }
 
@@ -17,13 +18,20 @@ ChatServer::~ChatServer(){
     //Desconstructor
 }
 
+
 void ChatServer::initialize(int recvPort){
+   
+   
    // create socket
    sockfd = socket(AF_INET,SOCK_DGRAM, 0);
    if (sockfd == -1){
         perror("Failed to create socket");
         exit(EXIT_FAILURE);
    }
+
+   // start the thread 
+   recvThread = std::thread(&ChatServer::listenForMessagesThread,this);
+   keepRunning = true;
 
    // set up the server address sutrcutre for receiving 
    struct sockaddr_in recvAddr;
@@ -56,6 +64,24 @@ void ChatServer::initialize(int recvPort){
    std::cout << "Server initialized and bound to port " << recvPort << std::endl;
    
 }
+
+void ChatServer::listenForMessagesThread(){
+    while(keepRunning){
+        std::string msg = listenForMessages();
+
+        if (!msg.empty())
+        {
+            std::lock_guard<std::mutex> guard(msgMutex);
+            messageQueue.push(msg);
+            newMessageFlag = true;
+            cv.notify_one();
+        }
+        
+    }
+}
+
+
+
 
 std::string ChatServer::listenForMessages(){
     char buffer[1024] = {0};
@@ -100,9 +126,51 @@ void ChatServer::sendMessage(const char* message){
     
 }
 
-void ChatServer::shutdown(){
-    // close the server 
-    close(sockfd);
-    std::cout << "Server shut down. "<< std::endl;
+std::string ChatServer::popMessage(){
+    std::lock_guard<std::mutex> guard(msgMutex);
+    if (messageQueue.empty())
+    {
+        return "";
+    }
+    std::string msg = messageQueue.front();
+    messageQueue.pop();
+    return msg;
 }
 
+void ChatServer::shutdown(){
+    // close the server 
+    // close(sockfd);
+    // std::cout << "Server shut down. "<< std::endl;
+
+    keepRunning.store(false);
+    if (recvThread.joinable())
+    {
+        recvThread.join();
+    }
+
+    if (sockfd != -1)
+    {
+        close(sockfd);
+        sockfd = -1;
+    }
+    
+    
+}
+
+void ChatServer::waitForNewMessage(){
+    std::unique_lock<std::mutex> lock(msgMutex);
+    cv.wait(lock, [this]{ return newMessageFlag; });
+    newMessageFlag = false;
+    
+}
+
+void ChatServer::resetNewMessageFlag(){
+    std::lock_guard<std::mutex> guard(msgMutex);
+    newMessageFlag = false;
+}
+
+
+bool ChatServer::hasMessages(){
+    std::lock_guard<std::mutex> guard(msgMutex);
+    return !messageQueue.empty();
+}
