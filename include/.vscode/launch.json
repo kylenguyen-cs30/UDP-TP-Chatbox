@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/khanhnguyen/Developer/cpsc351/a4/a4/include",
+      "program": "/Users/khanhnguyen/Developer/cpsc351/a4/a4/include/build/Debug/outDebug"
+    }
+  ]
+}

@@ -63,13 +63,6 @@ void ChatFrame::OnCheckMessages(wxTimerEvent &event)
     {
         conversationCtrl->AppendText(receivedMessage + "\n");
     }
-    
-    
-
-
-    // Check for the server message
-
-    // check for the client message
 }
 
 void ChatFrame::OnSend(wxCommandEvent &e)
@@ -109,4 +102,9 @@ void ChatFrame::OnClose(wxCommandEvent &e)
 ISSUE :
 - the application is still very slow 
 
+
+Questions: 
+- Can you explain how does Mutex and Threads in this project ? 
+- How can i implement Mutext and Threads in this project ? 
+- 
 */
