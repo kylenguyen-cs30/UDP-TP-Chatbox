@@ -4,6 +4,30 @@
 
 ## Project Structure 
 
+```
+├── Makefile
+├── chat_app
+├── include
+│   ├── ChatClient.h
+│   ├── ChatServer.h
+│   └── GUI.h
+├── readme.md
+├── src
+│   ├── ChatClient.cpp
+│   ├── ChatServer.cpp
+│   ├── client_main.cpp
+│   ├── gui.cpp
+│   ├── launch.json
+│   ├── server_main.cpp
+│   ├── tasks.json
+│   ├── test.sh
+│   ├── test_chatapp_client
+│   └── test_chatapp_server
+└── wxWidgets-3.1.5.tar.bz2
+
+3 directories, 17 files
+```
+
 
 - include/: Contains header files for the ChatClient, ChatServer, and GUI components.
 - src/: Contains the implementation (.cpp files) of the ChatClient, ChatServer, GUI components, and main files for both the client and server.
@@ -18,23 +42,23 @@
 - Compilation: Use the provided Makefile to compile the application. Run the following command in the terminal:
 
 
-'''
+```
 make all
-'''
+```
 - Run: After successful compilation, you can start the server and client applications.
 
 ## Usage
 - Server Mode: To start the application in server mode, run:
 
-'''
+```
 ./chat_app --server
-'''
+```
 - Client Mode: To start the application in client mode, run:
 
 
-'''
+```
 ./chat_app --client
-'''
+```
 - Ensure the server is running before starting a client. The default configuration uses localhost and predefined ports for communication.
 
 
