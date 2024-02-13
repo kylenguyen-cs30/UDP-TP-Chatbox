@@ -12,6 +12,31 @@
 - readme.md: This readme file.
 - wxWidgets-3.1.5.tar.bz2: The wxWidgets library needed to compile the GUI.
 
+## Installation
+- wxWidgets Setup: Ensure wxWidgets is installed and properly configured on your system. If not, refer to the wxWidgets-3.1.5.tar.bz2 archive included in the project for installation or download the latest version from the wxWidgets official website.
+
+- Compilation: Use the provided Makefile to compile the application. Run the following command in the terminal:
+
+
+'''
+make all
+'''
+- Run: After successful compilation, you can start the server and client applications.
+
+## Usage
+- Server Mode: To start the application in server mode, run:
+
+'''
+./chat_app --server
+'''
+- Client Mode: To start the application in client mode, run:
+
+
+'''
+./chat_app --client
+'''
+- Ensure the server is running before starting a client. The default configuration uses localhost and predefined ports for communication.
+
 
 ## Overview of Mutexes and Threads
 - This application utilizes mutexes (std::mutex) and threads (std::thread) to handle concurrent operations in both the ChatClient and ChatServer components safely.
