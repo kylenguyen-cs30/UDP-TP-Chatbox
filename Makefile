@@ -1,28 +1,31 @@
+# Makefile for Chat Application
+
+# Compilation flags for wxWidgets
+WX_CFLAGS := $(shell wx-config --cxxflags)
+WX_LIBS := $(shell wx-config --libs)
+
 # Compiler
-CXX = g++
+CXX := g++
 
-# wxWidgets configuration
-WX_CONFIG = wx-config
+# Compiler options
+CXXFLAGS := -std=c++17 $(WX_CFLAGS)
+LDFLAGS := $(WX_LIBS)
 
-# Compiler and linker flags
-CXXFLAGS = -I../include $(shell $(WX_CONFIG) --cxxflags)
-LDFLAGS = $(shell $(WX_CONFIG) --libs)
+# Targets
+all: test_chatapp_client test_chatapp_server
 
-# Source and target
-SRCS = src/gui.cpp src/main.cpp
-TARGET = chat_app
+test_chatapp_client: gui.cpp client_main.cpp ChatClient.cpp ChatServer.cpp
+    @echo "Compiling the client application..."
+    $(CXX) $(CXXFLAGS) gui.cpp client_main.cpp ChatClient.cpp ChatServer.cpp $(LDFLAGS) -o test_chatapp_client
+    @echo "Client compilation successful."
 
-all: $(TARGET)
-
-# $(TARGET): $(SRC)
-# 	$(CXX) $(SRC) $(CXXFLAGS) $(LDFLAGS) -o $(TARGET)
-
-# clean:
-# 	rm -f $(TARGET)
-
-
-$(TARGET): $(SRC)
-	$(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
+test_chatapp_server: gui.cpp server_main.cpp ChatServer.cpp ChatClient.cpp
+    @echo "Compiling the server application..."
+    $(CXX) $(CXXFLAGS) gui.cpp server_main.cpp ChatServer.cpp ChatClient.cpp $(LDFLAGS) -o test_chatapp_server
+    @echo "Server compilation successful."
 
 clean:
-	rm -f $(TARGET)
+    @echo "Cleaning up..."
+    rm -f test_chatapp_client test_chatapp_server
+
+.PHONY: all clean

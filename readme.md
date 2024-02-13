@@ -3,32 +3,7 @@
 
 
 ## Project Structure 
-The project is organized as follows:
-'''
-.
-├── Makefile
-├── Step by Step Setup Guide.docx
-├── chat_app
-├── include
-│   ├── ChatClient.h
-│   ├── ChatServer.h
-│   └── GUI.h
-├── readme.md
-├── src
-│   ├── ChatClient.cpp
-│   ├── ChatServer.cpp
-│   ├── client_main.cpp
-│   ├── gui.cpp
-│   ├── launch.json
-│   ├── server_main.cpp
-│   ├── tasks.json
-│   ├── test.sh
-│   ├── test_chatapp_client
-│   └── test_chatapp_server
-└── wxWidgets-3.1.5.tar.bz2
 
-3 directories, 18 files
-'''
 
 - include/: Contains header files for the ChatClient, ChatServer, and GUI components.
 - src/: Contains the implementation (.cpp files) of the ChatClient, ChatServer, GUI components, and main files for both the client and server.
